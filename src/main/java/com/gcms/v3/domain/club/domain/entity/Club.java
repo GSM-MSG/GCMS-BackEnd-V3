@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.UUID;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
