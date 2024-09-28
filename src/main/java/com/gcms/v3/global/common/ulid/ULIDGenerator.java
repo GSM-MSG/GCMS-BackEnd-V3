@@ -16,7 +16,7 @@ public class ULIDGenerator implements IdentifierGenerator {
         return generateULID();
     }
 
-    public static String generateULID() {
+    public static byte[] generateULID() {
         long milliseconds = Instant.now().toEpochMilli();
 
         byte[] bytes = new byte[16];
@@ -24,7 +24,7 @@ public class ULIDGenerator implements IdentifierGenerator {
         buffer.putLong(milliseconds);
         buffer.putLong(random.nextLong());
 
-        return toULIDString(bytes);
+        return bytes;
     }
 
     private static String toULIDString(byte[] bytes) {
