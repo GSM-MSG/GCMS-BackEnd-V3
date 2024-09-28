@@ -20,8 +20,8 @@ public class User {
     @Id
     @GeneratedValue(generator = "ulidGenerator")
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gcms.v3.global.common.ulid.ULIDGenerator")
-    @Column(nullable = false, unique = true)
-    private String id;
+    @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
+    private byte[] id;
 
     @Column(columnDefinition = "VARCHAR(5)", nullable = false)
     private String name;

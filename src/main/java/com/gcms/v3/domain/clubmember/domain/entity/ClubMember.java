@@ -19,8 +19,8 @@ public class ClubMember {
     @Id
     @GeneratedValue(generator = "ulidGenerator")
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gcms.v3.global.common.ulid.ULIDGenerator")
-    @Column(nullable = false, unique = true)
-    private String id;
+    @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
+    private byte[] id;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
