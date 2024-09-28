@@ -27,7 +27,7 @@ public class ULIDGenerator implements IdentifierGenerator {
         return bytes;
     }
 
-    private static String toULIDString(byte[] bytes) {
+    public String toULIDString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bytes.length; i++) {
             if (i == 6 || i == 8 || i == 10 || i == 12) {
