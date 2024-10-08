@@ -29,6 +29,6 @@ public class User {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String email;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String profileImg;
 }
