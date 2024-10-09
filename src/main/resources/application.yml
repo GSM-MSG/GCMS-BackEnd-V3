@@ -34,4 +34,6 @@ spring:
       port: 6379
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret:
+    access-token: ${ACCESS_TOKEN_KEY}
+    refresh-token: ${REFRESH_TOKEN_KEY}

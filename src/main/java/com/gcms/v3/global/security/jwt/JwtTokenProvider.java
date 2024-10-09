@@ -9,7 +9,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,24 +19,24 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import static com.gcms.v3.global.security.jwt.JwtProperties.*;
+
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-    private static final String AUTHORITIES = "auth";
-    private static final String GRANT_TYPE = "Bearer";
-    private static final String TOKEN_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_TIME = 1000 * 60 * 30L;
-    private static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 7;
-    private static Key key;
+    private static Key accessTokenkey;
+    private static Key refreshtokenkey;
     private final AuthDetailsService authDetailsService;
+    private final JwtProperties jwtProperties;
 
     @PostConstruct
     public void init() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        key = Keys.hmacShaKeyFor(keyBytes);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getAccessTokenKey());
+        accessTokenkey = Keys.hmacShaKeyFor(keyBytes);
+
+        byte[] refreshKeyBytes = Decoders.BASE64.decode(jwtProperties.getRefreshTokenKey());
+        refreshtokenkey = Keys.hmacShaKeyFor(refreshKeyBytes);
     }
 
     public TokenInfoResponseDto generateToken(String email) {
@@ -60,7 +59,7 @@ public class JwtTokenProvider {
                 .setHeaderParam("typ", GRANT_TYPE)
                 .claim(AUTHORITIES, "JWT")
                 .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(accessTokenkey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -72,7 +71,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(email)
                 .setHeaderParam("typ", "JWT")
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(refreshtokenkey, SignatureAlgorithm.HS256)
                 .claim(AUTHORITIES, "JWT")
                 .setIssuedAt(new Date())
                 .setExpiration(refreshTokenExpiresIn)
@@ -92,7 +91,7 @@ public class JwtTokenProvider {
 
     private Claims parseClaims(String assessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(assessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(accessTokenkey).build().parseClaimsJws(assessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
@@ -108,7 +107,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(accessTokenkey).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             throw new InvalidAuthTokenException();
