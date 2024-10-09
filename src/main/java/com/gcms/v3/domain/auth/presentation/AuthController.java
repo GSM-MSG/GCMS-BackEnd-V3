@@ -15,7 +15,7 @@ public class AuthController {
     private final SignInService signInService;
 
     @PostMapping
-    public ResponseEntity<TokenInfoResponseDto> test(@RequestBody SignInRequestDto signInRequestDto) {
+    public ResponseEntity<TokenInfoResponseDto> signIn (@RequestBody SignInRequestDto signInRequestDto) {
         TokenInfoResponseDto res = signInService.execute(signInRequestDto);
         return ResponseEntity.ok(res);
     }
