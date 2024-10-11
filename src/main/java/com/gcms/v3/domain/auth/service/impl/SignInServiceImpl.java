@@ -26,7 +26,7 @@ public class SignInServiceImpl implements SignInService {
     private final UserRoleRepository userRoleRepository;
 
     public TokenInfoResponseDto execute(SignInRequestDto signInRequestDto) {
-        String accessToken = oAuth2Service.requestAccessToken(signInRequestDto.getCode());
+        String accessToken = oAuth2Service.requestAccessToken(signInRequestDto.code());
         GoogleOAuth2UserInfo googleOAuth2UserInfo = oAuth2Service.requestUserInfo(accessToken);
 
         User user = userRepository.findByEmail(googleOAuth2UserInfo.getEmail())
