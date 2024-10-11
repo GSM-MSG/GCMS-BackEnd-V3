@@ -1,6 +1,7 @@
 package com.gcms.v3.global.oauth2;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -35,8 +36,16 @@ public class OAuth2Service {
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(config.getTokenUri(), request, Map.class);
-        return (String) response.getBody().get("access_token");
+        ResponseEntity<Map<String, String>> response =
+                restTemplate.exchange(
+                        config.getTokenUri(),
+                        HttpMethod.POST,
+                        request,
+                        new ParameterizedTypeReference<>() {
+                        }
+                );
+
+        return response.getBody().get("access_token");
     }
 
 
@@ -49,7 +58,13 @@ public class OAuth2Service {
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
-        ResponseEntity<Map> response = restTemplate.exchange(config.getUserInfoUri(), HttpMethod.GET, request, Map.class);
+        ResponseEntity<Map<String, Object>> response =
+                restTemplate.exchange(
+                        config.getUserInfoUri(),
+                        HttpMethod.GET,
+                        request,
+                        new ParameterizedTypeReference<>() {}
+                );
 
         return new GoogleOAuth2UserInfo(response.getBody());
     }
