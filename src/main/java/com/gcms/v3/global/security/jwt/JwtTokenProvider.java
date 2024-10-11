@@ -19,11 +19,19 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import static com.gcms.v3.global.security.jwt.JwtProperties.*;
-
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
+
+    private static final String AUTHORITIES = "auth";
+
+    private static final String GRANT_TYPE = "Bearer";
+
+    private static final String TOKEN_PREFIX = "Bearer ";
+
+    private static final long ACCESS_TOKEN_TIME = 1000 * 60 * 30L;
+
+    private static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 7;
 
     private static Key accessTokenkey;
     private static Key refreshtokenkey;
@@ -32,10 +40,10 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getAccessTokenKey());
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.accessToken());
         accessTokenkey = Keys.hmacShaKeyFor(keyBytes);
 
-        byte[] refreshKeyBytes = Decoders.BASE64.decode(jwtProperties.getRefreshTokenKey());
+        byte[] refreshKeyBytes = Decoders.BASE64.decode(jwtProperties.refreshToken());
         refreshtokenkey = Keys.hmacShaKeyFor(refreshKeyBytes);
     }
 
