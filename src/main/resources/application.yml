@@ -12,8 +12,28 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            redirect-uri: ${REDIRECT_URI}
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            token-uri: ${TOKEN-URI}
+            user-info-uri: ${USER_INFO_URI}
 
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+
+jwt:
+  secret:
+    access-token: ${ACCESS_TOKEN_KEY}
+    refresh-token: ${REFRESH_TOKEN_KEY}
