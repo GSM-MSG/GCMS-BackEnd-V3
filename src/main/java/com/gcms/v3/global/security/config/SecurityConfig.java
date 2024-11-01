@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/v3/auth").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/v3/auth/reissueToken").authenticated()
                 )
 
                 .addFilterBefore(new ExceptionFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
