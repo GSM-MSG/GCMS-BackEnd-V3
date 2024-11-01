@@ -1,5 +1,7 @@
 package com.gcms.v3.domain.auth.service.impl;
 
+import com.gcms.v3.domain.auth.domain.entity.RefreshToken;
+import com.gcms.v3.domain.auth.domain.repository.RefreshTokenRepository;
 import com.gcms.v3.domain.auth.presentation.data.request.SignInRequestDto;
 import com.gcms.v3.domain.auth.presentation.data.response.TokenInfoResponseDto;
 import com.gcms.v3.domain.auth.service.SignInService;
@@ -24,6 +26,7 @@ public class SignInServiceImpl implements SignInService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRoleRepository userRoleRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public TokenInfoResponseDto execute(SignInRequestDto signInRequestDto) {
         String accessToken = oAuth2Service.requestAccessToken(signInRequestDto.code());
@@ -32,7 +35,11 @@ public class SignInServiceImpl implements SignInService {
         User user = userRepository.findByEmail(googleOAuth2UserInfo.getEmail())
                 .orElseGet(() -> toEntity(googleOAuth2UserInfo));
 
-        return jwtTokenProvider.generateToken(user.getEmail());
+        TokenInfoResponseDto responseDto = jwtTokenProvider.generateToken(user.getEmail());
+
+        saveRefreshToken(user.getEmail(), responseDto.refreshToken());
+
+        return responseDto;
     }
 
     private User toEntity(GoogleOAuth2UserInfo googleOAuth2UserInfo) {
@@ -55,4 +62,12 @@ public class SignInServiceImpl implements SignInService {
         userRoleRepository.save(userRole);
     }
 
+    private void saveRefreshToken(String email, String refreshToken) {
+        RefreshToken token = RefreshToken.builder()
+                .email(email)
+                .token(refreshToken)
+                .build();
+
+        refreshTokenRepository.save(token);
+    }
 }
