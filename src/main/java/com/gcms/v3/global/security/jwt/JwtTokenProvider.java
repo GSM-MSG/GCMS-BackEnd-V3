@@ -126,4 +126,26 @@ public class JwtTokenProvider {
         }
     }
 
+    public String parseToken(String token) {
+        if (token.startsWith(TOKEN_PREFIX)) {
+            return token.replace(TOKEN_PREFIX, "");
+        }
+        else return null;
+    }
+
+    public String exactEmailFromRefreshToken(String refreshToken) {
+        return getTokenSubject(refreshToken, refreshtokenkey);
+    }
+
+    private String getTokenSubject (String token, Key secret) {
+        return getTokenBody(token, secret).getSubject();
+    }
+
+    private Claims getTokenBody(String token, Key secret) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 }
