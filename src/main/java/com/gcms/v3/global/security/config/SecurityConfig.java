@@ -44,6 +44,7 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/v3/auth").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/v3/auth/reissueToken").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/v3/auth/logout").authenticated()
                 )
 
                 .addFilterBefore(new ExceptionFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
