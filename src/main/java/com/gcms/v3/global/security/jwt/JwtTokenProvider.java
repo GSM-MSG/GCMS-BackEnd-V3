@@ -1,6 +1,7 @@
 package com.gcms.v3.global.security.jwt;
 
 import com.gcms.v3.domain.auth.presentation.data.response.TokenInfoResponseDto;
+import com.gcms.v3.global.redis.RedisUtil;
 import com.gcms.v3.global.security.exception.InvalidAuthTokenException;
 import com.gcms.v3.global.security.auth.AuthDetailsService;
 import io.jsonwebtoken.*;
@@ -37,6 +38,7 @@ public class JwtTokenProvider {
     private static Key refreshtokenkey;
     private final AuthDetailsService authDetailsService;
     private final JwtProperties jwtProperties;
+    private final RedisUtil redisUtil;
 
     @PostConstruct
     public void init() {
@@ -116,6 +118,11 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(accessTokenkey).build().parseClaimsJws(token);
+
+            if (redisUtil.hasKeyBlackList(token)) {
+                throw new InvalidAuthTokenException();
+            }
+
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             throw new InvalidAuthTokenException();
@@ -147,5 +154,15 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Long getExpiration(String accessToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(accessTokenkey)
+                .build()
+                .parseClaimsJws(accessToken)
+                .getBody();
+
+        return claims.getExpiration().getTime();
     }
 }
