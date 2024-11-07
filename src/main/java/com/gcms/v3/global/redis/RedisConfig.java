@@ -1,6 +1,5 @@
 package com.gcms.v3.global.redis;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ public class RedisConfig {
     }
 
     @Bean
-    @Transactional
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setValueSerializer(new StringRedisSerializer());

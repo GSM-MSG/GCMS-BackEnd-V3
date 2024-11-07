@@ -9,11 +9,13 @@ import com.gcms.v3.domain.user.util.UserUtil;
 import com.gcms.v3.global.redis.RedisUtil;
 import com.gcms.v3.global.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class LogoutServiceImpl implements LogoutService {
 
     private final UserUtil userUtil;
