@@ -42,9 +42,10 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .requestMatchers(HttpMethod.POST, "/v3/auth").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/v3/auth/reissueToken").authenticated()
-                                .requestMatchers(HttpMethod.DELETE, "/v3/auth/logout").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/reissueToken").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/auth/logout").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/auth").authenticated()
                 )
 
                 .addFilterBefore(new ExceptionFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
