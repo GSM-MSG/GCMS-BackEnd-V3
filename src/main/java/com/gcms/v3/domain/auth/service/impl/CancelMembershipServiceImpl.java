@@ -1,5 +1,6 @@
 package com.gcms.v3.domain.auth.service.impl;
 
+import com.gcms.v3.domain.auth.domain.repository.RefreshTokenRepository;
 import com.gcms.v3.domain.auth.service.CancelMembershipService;
 import com.gcms.v3.domain.user.domain.entity.User;
 import com.gcms.v3.domain.user.domain.repository.UserRepository;
@@ -17,9 +18,12 @@ public class CancelMembershipServiceImpl implements CancelMembershipService {
     private final UserUtil userUtil;
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public void execute() {
         User user = userUtil.getCurrentUser();
+
+        refreshTokenRepository.deleteById(user.getEmail());
 
         userRoleRepository.deleteByUser(user);
         userRepository.deleteById(user.getId());
