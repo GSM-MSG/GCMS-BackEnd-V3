@@ -11,10 +11,10 @@ import org.springframework.data.redis.core.index.Indexed;
 @RedisHash(value = "refreshToken", timeToLive = 60L * 60 * 24 * 7)
 public class RefreshToken {
 
+    @Id
     @Indexed
     private String email;
 
-    @Id
     @Indexed
     private String token;
 }
