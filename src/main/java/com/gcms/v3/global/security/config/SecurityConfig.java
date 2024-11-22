@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/auth/reissueToken").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/auth/reissueToken").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/auth/logout").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/auth").authenticated()
                 )
