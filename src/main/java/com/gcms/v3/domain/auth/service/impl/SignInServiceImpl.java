@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional(rollbackOn = Exception.class)
 @RequiredArgsConstructor
 public class SignInServiceImpl implements SignInService {
 

@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface UserRoleRepository extends JpaRepository<UserRole, byte[]> {
     List<UserRole> findByUser(User user);
+
+    void deleteByUser(User user);
 }
